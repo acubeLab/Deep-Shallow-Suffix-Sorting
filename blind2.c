@@ -28,11 +28,17 @@ extern UChar  *Text;                   // input string+ overshoot
 extern Int32  Text_size;               // size of input string
 extern UChar  *Upper_text_limit;       // Text+Text_size
 
+/* -- union  integer/node_pointer: used for blind trie nodes */
+typedef union intnpx {
+  Int32 integer;
+  struct nodex *nodep; // struct nodex defined below
+} intnp;
+
 /* ------- node of blind trie -------- */ 
 typedef struct nodex {
   Int32 skip;
   UChar key;  
-  struct nodex  *down;      // first child
+  intnp down;               // first child or suffix 
   struct nodex *right;      // next brother
 } node;
 
@@ -40,12 +46,12 @@ typedef struct nodex {
 // -------- local global variables -------------------
 #define BUFSIZE 1000
 #define FREESIZE 5000
-void *freearr[FREESIZE];
+static void *freearr[FREESIZE];
 static node *bufn;
 static int bufn_num=0, free_num=0;
 static Int32 *Aux, Aux_written;
-node **Stack;
-int Stack_size;
+static node **Stack;
+static int Stack_size;
 
 /* ****************************************************************
    routine for deep-sorting the suffixes a[0] ... a[n-1]
@@ -79,7 +85,7 @@ void blind_ssort(Int32 *a, Int32 n, Int32 depth)
   }
 
   // ------- init root with the first unsorted suffix
-  nh.skip = -1;   nh.right = NULL; nh.down = (void *) a[j]; 
+  nh.skip = -1;   nh.right = NULL; nh.down.integer = a[j]; 
   root = &nh;
 
   // ------- insert suffixes a[j+1] ... a[n-1]
@@ -87,7 +93,7 @@ void blind_ssort(Int32 *a, Int32 n, Int32 depth)
     h=find_companion(root, Text+a[i]);
     assert(h->skip==-1);
     assert(Stack_size<=i-j);
-    aj=(Int32) h->down;
+    aj= h->down.integer;
     assert(aj>a[i]);
     lcp = compare_suffixes(aj,a[i],depth);
     insert_suffix(root, a[i], lcp, Text[aj+lcp]);
@@ -119,7 +125,7 @@ void blind_ssort(Int32 *a, Int32 n, Int32 depth)
     t = head->skip;
     if(s+t>=Upper_text_limit)    // s[t] does not exist: mismatch 
       return get_leaf(head);
-    c = s[t]; p = head->down;
+    c = s[t]; p = head->down.nodep;
   repeat:
     if(c==p->key) {              // found branch corresponding to c
       head = p;
@@ -143,14 +149,14 @@ void blind_ssort(Int32 *a, Int32 n, Int32 depth)
   assert(head->skip>=0);
 
   do {
-    head = head->down;
+    head = head->down.nodep;
   } while(head->skip>=0);
   return head;
 }
 
 
 
-__inline__ node *new_node__blind_ssort(void)
+inline static node *new_node__blind_ssort(void)
 {
   if(bufn_num-- == 0) {
     bufn = (node *) malloc(BUFSIZE * sizeof(node));
@@ -182,7 +188,7 @@ __inline__ node *new_node__blind_ssort(void)
   // ---------- find the insertion point
   while( (t=h->skip) < n) {
     if( t < 0) break;          // insert "suf" just above *h
-    c=s[t];  p=h->down;  
+    c=s[t];  p=h->down.nodep;  
     // in the list p there must be a branch corresponding to c
   repeat:
     if(c==p->key) {              // found branch corresponding to c
@@ -214,12 +220,12 @@ __inline__ node *new_node__blind_ssort(void)
     p->down = h->down;   
     p->right = NULL;
     h->skip = n;
-    h->down = p;        // now *h has p as the only child 
+    h->down.nodep = p;        // now *h has p as the only child 
   }
   assert(h->skip==n);
 
   // -------- search the position of s[n] among *h offsprings
-  c=s[n]; pp = &(h->down);
+  c=s[n]; pp = &(h->down.nodep);
   while((*pp)!=NULL) {
     if((*pp)->key>=c) 
       break;
@@ -230,7 +236,7 @@ __inline__ node *new_node__blind_ssort(void)
   p->skip = -1;
   p->key = c; 
   p->right = *pp; *pp = p;
-  p->down = (void *) suf;
+  p->down.integer = suf;
   return;
 }
 
@@ -244,22 +250,22 @@ __inline__ node *new_node__blind_ssort(void)
   node *p, *nextp;
 
   if(h->skip<0)
-    Aux[Aux_written++] = (Int32) h->down;
+    Aux[Aux_written++] = h->down.integer;
   else {
-    p = h->down;
+    p = h->down.nodep;
     assert(p!=NULL);
     do {
       nextp = p->right;
       if(nextp!=NULL) {
-	assert(nextp->key>=p->key);
-	// if there are 2 nodes with equal keys 
-	// they must be considered in inverted order
-	if(nextp->key==p->key) {
-	  traverse_trie(nextp);
-	  traverse_trie(p);
-	  p = nextp->right;
-	  continue;
-	}
+        assert(nextp->key>=p->key);
+        // if there are 2 nodes with equal keys 
+        // they must be considered in inverted order
+        if(nextp->key==p->key) {
+          traverse_trie(nextp);
+          traverse_trie(p);
+          p = nextp->right;
+          continue;
+        }
       }
       traverse_trie(p);
       p=nextp;
@@ -278,7 +284,7 @@ __inline__ node *new_node__blind_ssort(void)
    the function return the result of the comparison (+ or -) and writes 
    in Cmp_done the number of comparisons done
    *********************************************************************** */ 
- __inline__
+ inline
 Int32 get_lcp_unrolled(UChar *b1, UChar *b2, Int32 cmp_limit)
 {
   Int32 cmp2do; 

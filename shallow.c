@@ -18,8 +18,8 @@ extern Int32 Mk_qs_thresh;         // recursion limit for mk quicksort:
                                    // using insertion sort
 
 // ----- "local" global variables
-Int32 Shallow_limit;               // Max depth for shallow sorting
-UChar *Shallow_text_limit;         // Text+Shallow_limit
+static Int32 Shallow_limit;               // Max depth for shallow sorting
+static UChar *Shallow_text_limit;         // Text+Shallow_limit
 
 #define UNROLL 1                   // if !=0 partially unroll shallow_mkq
 
@@ -45,7 +45,7 @@ void shallow_sort(Int32 *a, int n, int shallow_limit)
   case(4): shallow_mkq32(a, n, Text+2); break;
   default:
     fprintf(stderr,
-	    "Invalid word size for mkqs (%d) (shallow_sort)\n",_ds_Word_size);
+      "Invalid word size for mkqs (%d) (shallow_sort)\n",_ds_Word_size);
     exit(1);
   }     
 }
@@ -55,7 +55,7 @@ void shallow_sort(Int32 *a, int n, int shallow_limit)
    auxiliary procedures and macro for bentley-sedgewick's
    multikey quicksort
    ======================================================= */
-__inline__ void vecswap2(Int32 *a, Int32 *b, int n)
+static inline void vecswap2(Int32 *a, Int32 *b, int n)
 {   while (n-- > 0) {
         Int32 t = *a;
         *a++ = *b;
@@ -66,7 +66,7 @@ __inline__ void vecswap2(Int32 *a, Int32 *b, int n)
 #define swap2(a, b) { t = *(a); *(a) = *(b); *(b) = t; }
 #define ptr2char(i) (*(*(i) + text_depth))
 
-__inline__ Int32 *med3func(Int32 *a, Int32 *b, Int32 *c, UChar *text_depth)
+inline Int32 *med3func(Int32 *a, Int32 *b, Int32 *c, UChar *text_depth)
 {   int va, vb, vc;
     if ((va=ptr2char(a)) == (vb=ptr2char(b)))
         return a;
@@ -165,7 +165,7 @@ void shallow_mkq(Int32 *a, int n, UChar *text_depth)
 #define getword16(s) ((unsigned)((*(s) << 8) | *((s)+1)))
 
 #if 0
-__inline__ Int32 *med3func16(Int32 *a, Int32 *b, Int32 *c, UChar *text_depth)
+inline Int32 *med3func16(Int32 *a, Int32 *b, Int32 *c, UChar *text_depth)
 {   int va, vb, vc;
     if ((va=ptr2char16(a)) == (vb=ptr2char16(b)))
         return a;
@@ -348,7 +348,7 @@ void shallow_mkq32(Int32 *a, int n, UChar *text_depth)
    At exit Cmp_left has been decreased by the # of comparisons done   
    *********************************************************************** */ 
 static Int32 Cmp_left;
-__inline__ 
+static inline 
 Int32 cmp_unrolled_shallow_lcp(UChar *b1, UChar *b2)
 {
 
@@ -514,17 +514,17 @@ static void shallow_inssort_lcp(Int32 *a, Int32 n, UChar *text_depth)
       assert(r!=0 || lcp_new>= cmp_from_limit);
 
       if(r<=0) {         // we have a[j-1] <= ai
-	lcp[j1]=lcp_new; // ai will be written in a[j]; update lcp[j-1]
-	break;
+  lcp[j1]=lcp_new; // ai will be written in a[j]; update lcp[j-1]
+  break;
       }
 
       // --- we have a[j-1]>ai. a[j-1] and maybe other will be moved down 
       // --- use lcp to move down as many elements of a[] as possible
       lcpi = lcp_new;                
       do {
-	a[j] = a[j1];               // move down a[j-1]
+  a[j] = a[j1];               // move down a[j-1]
         lcp[j] = lcp[j1];           // move down lcp[j-1]
-	j=j1; j1--;                 // update j and j1=j-1
+  j=j1; j1--;                 // update j and j1=j-1
       } while(lcpi<lcp[j1]);        // recall that lcp[-1]=-1
 
       if(lcpi>lcp[j1]) break;       // ai will be written in position j

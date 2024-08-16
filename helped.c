@@ -96,50 +96,50 @@ void helped_sort(Int32 *a, int n, int depth)
       diff = aoffset - toffset;
       assert(diff!=0);
       if(diff>0) {     // anchor <=  a[i] < (sorted suffix)
-	if(curr_sb!=Get_small_bucket(text_pos+diff)) {
-	  if(diff<min_forw_offset) {
-	    min_forw_offset = diff;
-	    best_forw_anchor = anchor;
-	    forw_anchor_index = i;
-	  }
-	}
-	else {  // the sorted suffix belongs to the same bucket of a[0]..a[n-1]
-	  if(diff<min_forw_offset_buc) {
-	    min_forw_offset_buc = diff;
-	    best_forw_anchor_buc = anchor;
-	    forw_anchor_index_buc = i;
-	  }
-	}
+  if(curr_sb!=Get_small_bucket(text_pos+diff)) {
+    if(diff<min_forw_offset) {
+      min_forw_offset = diff;
+      best_forw_anchor = anchor;
+      forw_anchor_index = i;
+    }
+  }
+  else {  // the sorted suffix belongs to the same bucket of a[0]..a[n-1]
+    if(diff<min_forw_offset_buc) {
+      min_forw_offset_buc = diff;
+      best_forw_anchor_buc = anchor;
+      forw_anchor_index_buc = i;
+    }
+  }
       }
       else {          // diff<0 =>  anchor <= (sorted suffix) < a[i]
-	if(diff>max_back_offset) {
-	  max_back_offset = diff;
-	  best_back_anchor = anchor;
-	  back_anchor_index = i;
-	}
-	// try to find a sorted suffix > a[i] by looking at next anchor
-	aoffset = Anchor_offset[++anchor];
-	if(aoffset<Anchor_dist) {
-	  diff = Anchor_dist + aoffset - toffset;
-	  assert(diff>0);
-	  if(curr_sb!=Get_small_bucket(text_pos+diff)) {
-	    if(diff<min_forw_offset) {
-	      min_forw_offset = diff;
-	      best_forw_anchor = anchor;
-	      forw_anchor_index = i;
-	    }
-	  } else {
-	    if(diff<min_forw_offset_buc) {
-	      min_forw_offset_buc = diff;
-	      best_forw_anchor_buc = anchor;
-	      forw_anchor_index_buc = i;
-	    }
-	  }
-	}
+  if(diff>max_back_offset) {
+    max_back_offset = diff;
+    best_back_anchor = anchor;
+    back_anchor_index = i;
+  }
+  // try to find a sorted suffix > a[i] by looking at next anchor
+  aoffset = Anchor_offset[++anchor];
+  if(aoffset<Anchor_dist) {
+    diff = Anchor_dist + aoffset - toffset;
+    assert(diff>0);
+    if(curr_sb!=Get_small_bucket(text_pos+diff)) {
+      if(diff<min_forw_offset) {
+        min_forw_offset = diff;
+        best_forw_anchor = anchor;
+        forw_anchor_index = i;
+      }
+    } else {
+      if(diff<min_forw_offset_buc) {
+        min_forw_offset_buc = diff;
+        best_forw_anchor_buc = anchor;
+        forw_anchor_index_buc = i;
       }
     }
   }
-  // ------ if forward anchor_sort is possible, do it! --------	    
+      }
+    }
+  }
+  // ------ if forward anchor_sort is possible, do it! --------     
   if(best_forw_anchor>=0 && min_forw_offset<depth-1) {
     Calls_anchor_sort_forw++;
     assert(min_forw_offset<2*Anchor_dist);
@@ -157,14 +157,14 @@ void helped_sort(Int32 *a, int n, int depth)
     // make sure that the offset is legal for all a[i]
     for(i=0;i<n;i++) {
       if(a[i]+max_back_offset<0) 
-	goto fail;                    // illegal offset, give up
+  goto fail;                    // illegal offset, give up
     }
     // make sure that a[0] .. a[n-1] are preceded by the same substring
     T0 = Text + a[0];
     for(i=1;i<n;i++) {
       Ti = Text + a[i];
       for(j=max_back_offset; j<= -1; j++)
-	if(T0[j]!=Ti[j]) goto fail;   // mismatch, give up
+  if(T0[j]!=Ti[j]) goto fail;   // mismatch, give up
     }
     // backward anchor sorting is possible
     Calls_anchor_sort_backw++;
@@ -199,8 +199,8 @@ void helped_sort(Int32 *a, int n, int depth)
       // sort the equal group 
       Calls_anchor_sort_forw++;
       if(equal>1)
-	general_anchor_sort(a+lower,equal,anchor_pos,anchor_rank,
-			    min_forw_offset_buc);
+  general_anchor_sort(a+lower,equal,anchor_pos,anchor_rank,
+          min_forw_offset_buc);
 
       // sort upper and lower groups using deep_sort
       if(lower>1) pseudo_or_deep_sort(a,lower,depth);
@@ -241,12 +241,12 @@ void pseudo_or_deep_sort(Int32 *a, Int32 n, Int32 depth)
       sb = Get_small_bucket(pseudo_anchor_pos);
       // check if pseudo_anchor is in a sorted bucket
       if(IS_SORTED_BUCKET(sb)) {
-	size=BUCKET_SIZE(sb);                     // size of group
-	if(size>B2g_ratio*n) continue;            // discard large groups 
-	// sort a[0] ... a[n-1] using pseudo_anchor
-	pseudo_anchor_sort(a,n,pseudo_anchor_pos,offset);
-	Calls_pseudo_anchor_sort_forw++;        // update count
-	return;
+  size=BUCKET_SIZE(sb);                     // size of group
+  if(size>B2g_ratio*n) continue;            // discard large groups 
+  // sort a[0] ... a[n-1] using pseudo_anchor
+  pseudo_anchor_sort(a,n,pseudo_anchor_pos,offset);
+  Calls_pseudo_anchor_sort_forw++;        // update count
+  return;
       }
     }
   }
@@ -345,13 +345,13 @@ void general_anchor_sort(Int32 *a, Int32 n,
     while (curr_lo > lo) {
       item = Sa[--curr_lo]-offset;
       ris = bsearch(&item,a,n,sizeof(Int32), integer_cmp);
-      if(ris)	{MARK(curr_lo); to_be_found--;}
-      else	break;
+      if(ris) {MARK(curr_lo); to_be_found--;}
+      else  break;
     }
     while (curr_hi < hi) {
       item = Sa[++curr_hi]-offset;
       ris = bsearch(&item,a,n,sizeof(Int32), integer_cmp);
-      if(ris)	{MARK(curr_hi); to_be_found--;}
+      if(ris) {MARK(curr_hi); to_be_found--;}
       else      break;
     }
   }
@@ -460,7 +460,7 @@ void update_anchors(Int32 *a, Int32 n)
       Anchor_offset[anchor] = toffset;
       Anchor_rank[anchor] = (a - Sa) + i;
       assert(Sa[Anchor_rank[anchor]]==
-	     anchor*Anchor_dist+Anchor_offset[anchor]);
+       anchor*Anchor_dist+Anchor_offset[anchor]);
     }
   }
 }
@@ -486,10 +486,15 @@ void update_anchors(Int32 *a, Int32 n)
    ******************************************************************* */
 #define swap2(a, b) { t = *(a); *(a) = *(b); *(b) = t; }
 #define ptr2char(i) (*(*(i) + text_depth))
- 
+static inline void vecswap2(Int32 *a, Int32 *b, int n)
+{   while (n-- > 0) {
+        Int32 t = *a;
+        *a++ = *b;
+        *b++ = t;
+    }
+}
 Int32 split_group(Int32 *a, int n, int depth,int offset,Int32 pivot,int *first)
 {
-  void vecswap2(Int32 *a, Int32 *b, int n);
   int r, partval;
   Int32 *pa, *pb, *pc, *pd, *pa_old, *pd_old, pivot_pos, t;
   UChar *text_depth,*text_limit;

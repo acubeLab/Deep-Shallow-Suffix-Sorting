@@ -17,14 +17,14 @@ extern Int32  Blind_sort_ratio;        // ratio for using blind_sort
 extern Int32 Calls_deep_sort;     
 
 /* ***********************************************************************
-   Function to compare two strings originating from the *b1 and *b2
+   Function to compare two strings originating from *b1 and *b2
    The size of the unrolled loop must be at most equal to the costant 
    Cmp_overshoot defined in common.h
-   the function return the result of the comparison (+ or -) and writes 
+   the function returns the result of the comparison (+ or -) and writes 
    in Cmp_done the number of successfull comparisons done
    *********************************************************************** */ 
 static Int32 Cmp_done;
-__inline__
+static inline
 Int32 cmp_unrolled_lcp(UChar *b1, UChar *b2)
 {
 
@@ -32,7 +32,7 @@ Int32 cmp_unrolled_lcp(UChar *b1, UChar *b2)
   assert(b1 != b2);
   Cmp_done=0;
 
-  // execute blocks of 16 comparisons untill a difference
+  // execute blocks of 16 comparisons until a difference
   // is found or we run out of the string 
   do {
     // 1
@@ -127,7 +127,7 @@ Int32 cmp_unrolled_lcp(UChar *b1, UChar *b2)
 /* **************************************************************
    ternary quicksort (seward-like) with lcp information
    ************************************************************** */
-#define STACK_SIZE 100
+#define STACK_SIZE 100 // recursion is done "smallest first" so a log size stack suffices
 #define Swap(i,j) {tmp=a[i]; a[i]=a[j]; a[j]=tmp;}
 #define Pushd(x,y,z) {stack_lo[sp]=x; stack_hi[sp]=y; stack_d[sp]=z; sp++;}
 #define Popd(x,y,z)  {sp--; x=stack_lo[sp]; y=stack_hi[sp]; z=stack_d[sp];} 
@@ -145,13 +145,13 @@ void qs_unrolled_lcp(Int32 *a, int n, int depth, int blind_limit)
   r=sp=0;
   Pushd(0,n-1,depth);
 
-  // ----- repeat untill stack is empty ------
+  // ----- repeat until stack is empty ------
   while (sp > 0) {
     assert ( sp < STACK_SIZE );
     Popd(lo,hi,depth);
     text_depth = Text+depth;
 
-    // --- use shellsort for small groups
+    // --- use blind suffix sort for small groups
     if(hi-lo<blind_limit) { 
        blind_ssort(a+lo,hi-lo+1,depth);
        continue;
@@ -174,15 +174,16 @@ void qs_unrolled_lcp(Int32 *a, int n, int depth, int blind_limit)
     lcp_lo=lcp_hi=INT_MAX;
     while(1) {
       while(++i<hi) {
-	ris=cmp_unrolled_lcp(text_depth+a[i], text_pos_pivot);
+        ris=cmp_unrolled_lcp(text_depth+a[i], text_pos_pivot);
         if(ris>0) {
-	  if(Cmp_done < lcp_hi) lcp_hi=Cmp_done; break;
-	} else if(Cmp_done < lcp_lo) lcp_lo=Cmp_done;
+          if(Cmp_done < lcp_hi) lcp_hi=Cmp_done; 
+          break;
+        } else if(Cmp_done < lcp_lo) lcp_lo=Cmp_done;
       }
       while(--j>lo) {
-	ris=cmp_unrolled_lcp(text_depth+a[j], text_pos_pivot);
+        ris=cmp_unrolled_lcp(text_depth+a[j], text_pos_pivot);
         if(ris<0) { if(Cmp_done < lcp_lo) lcp_lo=Cmp_done; break; }
-	else if(Cmp_done < lcp_hi) lcp_hi=Cmp_done;
+        else if(Cmp_done < lcp_hi) lcp_hi=Cmp_done;
       }
       if (i >= j) break; 
       Swap(i,j);
