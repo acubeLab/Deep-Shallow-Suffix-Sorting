@@ -172,11 +172,16 @@ int main(int argc, char *argv[])
     perror(fnam);
     return 1;
   }
-  n=ftell(f);
-  if (n==0) {
+  long nlong = ftell(f);
+  if (nlong==0) {
     fprintf(stderr, "%s: file empty\n", fnam);
     return 0;
   }
+  else if(nlong >= (1L<<31)) {
+    fprintf(stderr, "%s: file too large, max size: 2^31 -1\n", fnam);
+    return 2;
+  }
+  n = (Int32) nlong;
 
   // ------ allocate memory for text and sa -------
   overshoot = compute_overshoot();

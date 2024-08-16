@@ -30,7 +30,7 @@ UInt16  *Anchor_offset;     // offset (wrt to the anchor) of the suffix
                             // whose rank is in Anchor_rank. 
 Int32 Anchor_num;           // number of anchor points
 Int32 ftab [65537];      
-Int32 runningOrder[256];
+static Int32 runningOrder[256];
 
 
 /* ------------------------------------------------------------------------

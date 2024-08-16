@@ -10,10 +10,10 @@
 
 
 /* ------ external global variables ------- */
-extern UChar  *Text;                   // input string+ overshoot
-extern UChar  *Upper_text_limit;       // Text+Text_size
-extern Int32  Text_size;               // size of input string
-extern Int32  Blind_sort_ratio;        // ratio for using blind_sort
+extern UChar *Text;                   // input string+ overshoot
+extern UChar *Upper_text_limit;       // Text+Text_size
+extern Int32 Text_size;               // size of input string
+extern Int32 Blind_sort_ratio;        // ratio for using blind_sort
 extern Int32 Calls_deep_sort;     
 
 /* ***********************************************************************
@@ -125,7 +125,7 @@ Int32 cmp_unrolled_lcp(UChar *b1, UChar *b2)
 } 
 
 /* **************************************************************
-   ternary quicksort (seward-like) with lcp information
+   Bentley-Sedgewick multi-key quicksort (seward-like) but with lcp information
    ************************************************************** */
 #define STACK_SIZE 100 // recursion is done "smallest first" so a log size stack suffices
 #define Swap(i,j) {tmp=a[i]; a[i]=a[j]; a[j]=tmp;}
@@ -182,7 +182,10 @@ void qs_unrolled_lcp(Int32 *a, int n, int depth, int blind_limit)
       }
       while(--j>lo) {
         ris=cmp_unrolled_lcp(text_depth+a[j], text_pos_pivot);
-        if(ris<0) { if(Cmp_done < lcp_lo) lcp_lo=Cmp_done; break; }
+        if(ris<0) { 
+          if(Cmp_done < lcp_lo) lcp_lo=Cmp_done; 
+          break; 
+        }
         else if(Cmp_done < lcp_hi) lcp_hi=Cmp_done;
       }
       if (i >= j) break; 
