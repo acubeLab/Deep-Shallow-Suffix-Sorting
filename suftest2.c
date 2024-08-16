@@ -45,7 +45,7 @@ extern Int32 Blind_sort_ratio;         // blind sort is used for groups of
                                        // size <= Text_size/Blind_sort_ratio
 
 
-
+#define DBL_CLK_TCK ((double) sysconf(_SC_CLK_TCK)) // clocks x secs 
 #define MAX_LCP_SIZE 1000000    // maximum size of a recordable LCP
 
 
@@ -67,9 +67,8 @@ int main(int argc, char *argv[])
   int c, *p, n;
   int print_sa, check_sa, num_opt,overshoot;
   UChar *x;
-  clock_t end,start, end_real, start_real;
-  struct tms r;
-  double tot_time, tot_time_real;
+  clock_t end_time,start_time;
+  struct tms en, st;
   extern char *optarg;
   extern int optind, opterr, optopt;
   char *fnam, *sa_filename;
@@ -132,7 +131,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, " file\n\n");
     fprintf(stderr,"\t-b bwtfile  write bwt to bwtfile\n");    
     fprintf(stderr,
-	    "\t-B ratio    blind_sort ratio [def. %d]\n",Blind_sort_ratio);
+      "\t-B ratio    blind_sort ratio [def. %d]\n",Blind_sort_ratio);
     fprintf(stderr,"\t-c          check the sa (could be very slow)\n");    
     fprintf(stderr,"\t-d dist     anchor distance [def. %d]\n",Anchor_dist);
     fprintf(stderr,"\t-f maxoff   Maximum offset for forward ");
@@ -140,17 +139,17 @@ int main(int argc, char *argv[])
     fprintf(stderr,
             "\t-l len      shallow sort limit [def. %d]\n",Shallow_limit);
     fprintf(stderr,
-	    "\t-r ratio    bucket to group max ratio [def. %d]\n",B2g_ratio);
+      "\t-r ratio    bucket to group max ratio [def. %d]\n",B2g_ratio);
     fprintf(stderr,"\t-p num      print num char of each suffix [def. 0]\n");
     fprintf(stderr,
-	    "\t-T thresh   Threshold for mk-qs [def. %d]\n", Mk_qs_thresh);
+      "\t-T thresh   Threshold for mk-qs [def. %d]\n", Mk_qs_thresh);
     fprintf(stderr,"\t-u          updates anchor ranks in get_rank()\n");
     fprintf(stderr,"\t-v          produces a verbose output\n");
     fprintf(stderr,"\t-w safile   write sa to safile\n");    
     fprintf(stderr,
             "\t-W lcpfile  check sa and write lcp to lcpfile (very slow)\n");
     fprintf(stderr,
-	    "\t-x wsize    word size in mkqs (default %d)\n\n",_ds_Word_size); 
+      "\t-x wsize    word size in mkqs (default %d)\n\n",_ds_Word_size); 
     return 0;
   }
   if(_ds_Verbose) {
@@ -203,15 +202,14 @@ int main(int argc, char *argv[])
   /* ---------  start measuring time ------------- */
   if(_ds_Verbose)
     fprintf(stderr,"Starting sa construction ... \n");
-  start_real = times(&r);
-  start  = (r.tms_utime+r.tms_stime);     /* user + system */
+  start_time = times(&st);
   ds_ssort(x, p, n);
-  end_real = times(&r);
-  end  = (r.tms_utime+r.tms_stime);     /* user + system */
- // tot_time =  ((double) (end-start))/CLK_TCK;
-  //tot_time_real =  ((double) (end_real-start_real))/CLK_TCK;
-  printf("Elapsed time: %.2f seconds (user+sys). Total real time: %.2f.\n", 
-	 tot_time, tot_time_real);
+  end_time = times(&en);
+  printf("SA Computation Time (secs): %.4f  " 
+         "User: %.4f, System: %.4f\n",
+                   (end_time - start_time)/DBL_CLK_TCK,
+                   (en.tms_utime - st.tms_utime)/DBL_CLK_TCK,
+                   (en.tms_stime - st.tms_stime)/DBL_CLK_TCK);
 
   // --------------- write bwt to a file 
   if(bwt_filename!=NULL) 
@@ -321,7 +319,7 @@ void write_lcp(char *filename, UChar *x, int *p, int n)
       max_lcp = MAX(max_lcp,j);
       sum_lcp += j;
       if(j<MAX_LCP_SIZE)
-	stat[j]++;   // one more lcp of length j
+  stat[j]++;   // one more lcp of length j
     }
   }
   // output lcp statistics
@@ -330,8 +328,8 @@ void write_lcp(char *filename, UChar *x, int *p, int n)
   if(max_lcp<MAX_LCP_SIZE) { 
     for(i=0;i<=max_lcp;i++) 
       if(stat[i]) {
-	fprintf(lcp,"%10d %10d\n",i,stat[i]);
-	sum += stat[i];
+  fprintf(lcp,"%10d %10d\n",i,stat[i]);
+  sum += stat[i];
       }
     if(sum+1!=n) {
       fprintf(stderr,"Fatal error! Invalid lcp stats!\n");
@@ -358,7 +356,7 @@ void check_sa_ordering(UChar *x, int *p, int n, int verbose)
     if (scmp3(x+p[i], x+p[i+1], & j, MIN(n-p[i], n-p[i+1]))>=0) {
       wrong++;
       if(verbose>1) {
-	printf("---> i=%d  p[i]=%d  p[i+1]=%d\n", i, p[i], p[i+1]);
+  printf("---> i=%d  p[i]=%d  p[i+1]=%d\n", i, p[i], p[i+1]);
       }
     }  
   }
@@ -381,7 +379,7 @@ void print_sa_onscreen(UChar *x, int *p, int n, int max_len)
     else {
       printf("%3d] %3d \"", i, p[i]);
       for (j=p[i]; j<n && j-p[i]<max_len; ++j)
-	pretty_putchar(x[j]);
+  pretty_putchar(x[j]);
       printf("\"\n");
     }
   }

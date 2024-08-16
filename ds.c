@@ -42,7 +42,7 @@ Int32 runningOrder[256];
    then, if a suffix in position t (i*Anchor_dist <= t < (i+1)*Anchor_dist)
    appears to be in a large group which is sorted, the rank of
    t is stored in Anchor_rank[i], and the value t-(i*Anchor_dist) 
-   is written to Anchor_offset[i]. Both vaulues can be later updated,
+   is written to Anchor_offset[i]. Both values can be later updated,
    but the value in Anchor_offset[i] can only decrease, so no further
    changes are done when Anchor_offset[i] is = 0. The invariant is:
    if Anchor_rank[i]>=0 then 
@@ -150,49 +150,49 @@ void ds_ssort(UChar *x, Int32 *p, Int32 n)
       --*/
     for (j = 0; j <= 255; j++) {
       if (j != ss) {
-	sb = (ss << 8) + j;
-	if ( ! (ftab[sb] & SETMASK) ) {
-	  Int32 lo = ftab[sb]   & CLEARMASK;
-	  Int32 hi = (ftab[sb+1] & CLEARMASK) - 1;
-	  if (hi > lo) {
-	    if (_ds_Verbose>2)
-	      fprintf(stderr,"sorting [%02x, %02x], done %d "
-			"this %d\n", ss, j, numQSorted, hi - lo + 1 );
-	    shallow_sort(Sa+lo, hi-lo+1,Shallow_limit);
+  sb = (ss << 8) + j;
+  if ( ! (ftab[sb] & SETMASK) ) {
+    Int32 lo = ftab[sb]   & CLEARMASK;
+    Int32 hi = (ftab[sb+1] & CLEARMASK) - 1;
+    if (hi > lo) {
+      if (_ds_Verbose>2)
+        fprintf(stderr,"sorting [%02x, %02x], done %d "
+      "this %d\n", ss, j, numQSorted, hi - lo + 1 );
+      shallow_sort(Sa+lo, hi-lo+1,Shallow_limit);
             #if 0
-	    check_ordering(lo, hi);
+      check_ordering(lo, hi);
             #endif
-	    numQSorted += ( hi - lo + 1 );
-	  }
-	}
-	ftab[sb] |= SETMASK;
+      numQSorted += ( hi - lo + 1 );
+    }
+  }
+  ftab[sb] |= SETMASK;
       }
     }
     assert (!bigDone[ss]);
     // ------ now order small buckets of type [xx,ss]  --------
     {
       for (j = 0; j <= 255; j++) {
-	copyStart[j] =  ftab[(j << 8) + ss]     & CLEARMASK;
-	copyEnd  [j] = (ftab[(j << 8) + ss + 1] & CLEARMASK) - 1;
+  copyStart[j] =  ftab[(j << 8) + ss]     & CLEARMASK;
+  copyEnd  [j] = (ftab[(j << 8) + ss + 1] & CLEARMASK) - 1;
       }
       // take care of the virtual -1 char in position Text_size+1
       if(ss==0) {
-	k=Text_size-1;
-	c1 = Text[k];
-	if (!bigDone[c1])
-	  Sa[ copyStart[c1]++ ] = k;
+  k=Text_size-1;
+  c1 = Text[k];
+  if (!bigDone[c1])
+    Sa[ copyStart[c1]++ ] = k;
       }
       for (j = ftab[ss << 8] & CLEARMASK; j < copyStart[ss]; j++) {
-	k = Sa[j]-1; if (k < 0) continue;  
-	c1 = Text[k];
-	if (!bigDone[c1])
-	  Sa[ copyStart[c1]++ ] = k;
+  k = Sa[j]-1; if (k < 0) continue;  
+  c1 = Text[k];
+  if (!bigDone[c1])
+    Sa[ copyStart[c1]++ ] = k;
       }
       for (j = (ftab[(ss+1) << 8] & CLEARMASK) - 1; j > copyEnd[ss]; j--) {
-	k = Sa[j]-1; if (k < 0) continue;
-	c1 = Text[k];
-	if (!bigDone[c1]) 
-	  Sa[ copyEnd[c1]-- ] = k;
+  k = Sa[j]-1; if (k < 0) continue;
+  c1 = Text[k];
+  if (!bigDone[c1]) 
+    Sa[ copyEnd[c1]-- ] = k;
       }
     }
     assert (copyStart[ss] - 1 == copyEnd[ss]);
@@ -201,14 +201,14 @@ void ds_ssort(UChar *x, Int32 *p, Int32 n)
   }
   if (_ds_Verbose) {
     fprintf(stderr, "\t %d pointers, %d sorted, %d scanned\n",
-	      Text_size, numQSorted, Text_size - numQSorted );
+        Text_size, numQSorted, Text_size - numQSorted );
     fprintf(stderr, "\t %d calls to helped_sort\n",Calls_helped_sort);      
     fprintf(stderr, "\t %d calls to anchor_sort (forward)\n",
-	    Calls_anchor_sort_forw);      
+      Calls_anchor_sort_forw);      
     fprintf(stderr, "\t %d calls to anchor_sort (backward)\n",
-	    Calls_anchor_sort_backw);      
+      Calls_anchor_sort_backw);      
     fprintf(stderr, "\t %d calls to pseudo_anchor_sort (forward)\n",
-    	    Calls_pseudo_anchor_sort_forw);      
+          Calls_pseudo_anchor_sort_forw);      
     fprintf(stderr, "\t %d calls to deep_sort\n",Calls_deep_sort);      
   }
   // ---- done! ---------------------------------------- 
@@ -264,12 +264,12 @@ void check_ordering(int lo, int hi)
   error=0;
   for(j1=lo;j1<hi;j1++) {
     if (scmp3(Text+Sa[j1], Text+Sa[j1+1], &jj, 
-	      MIN(Text_size-Sa[j1],Text_size-Sa[j1+1]))>=0) {
+        MIN(Text_size-Sa[j1],Text_size-Sa[j1+1]))>=0) {
       for(jj=0;jj<10;jj++) 
-	pretty_putchar(Text[Sa[j1]+jj]);
+  pretty_putchar(Text[Sa[j1]+jj]);
       printf("\n");
       for(jj=0;jj<10;jj++) 
-	pretty_putchar(Text[Sa[j1+1]+jj]);
+  pretty_putchar(Text[Sa[j1+1]+jj]);
       printf("\n");
       error++;
     }
@@ -278,7 +278,7 @@ void check_ordering(int lo, int hi)
     printf("----------- start ----------\n");
     for(j1=lo;j1<=hi;j1++) {
       for(jj=0;jj<10;jj++) 
-	pretty_putchar(Text[Sa[j1]+jj]);
+  pretty_putchar(Text[Sa[j1]+jj]);
       printf("\n");
     }
     printf("----------- end ------------\n\n");

@@ -3,15 +3,14 @@ SHELL=/bin/sh
 CC=gcc
 
 #these are for testing
-CFLAGS = -g -Wextra -Wall -Winline -O2 
+#CFLAGS =-std=gnu11 -g -Wextra -Wall -Winline -O2
 
 #these are for maximum speed
-#CFLAGS=-g -O3 -fomit-frame-pointer -W -Wall -Winline -m32 \
-#       -DDEBUG=0 -DNDEBUG=1  
+CFLAGS=-std=gnu11 -g -O3 -fomit-frame-pointer -Wextra -Wall -Winline -DDEBUG=0 -DNDEBUG=1  
 
 
 .PHONY: all
-all : ds unbwt bwt testlcp
+all: ds unbwt bwt testlcp
 
 
 # deep-shallow suffix sort algorithm
@@ -44,9 +43,3 @@ bwt: bwt.c ds_ssort.a
 
 clean: 
 	rm -f *.o *.a
-
-
-
-
-
-
