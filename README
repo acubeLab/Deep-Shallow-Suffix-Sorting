@@ -1,6 +1,6 @@
 Release notes for ds_ssort,   version 0.9.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Copyright (C) 2002 Giovanni Manzini
+Copyright (C) 2002- Giovanni Manzini
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ at most 5n + (36n)/b + (6n)/d bytes.
 Don't forget to include the file ds_ssort.h before calling the 
 procedures init_ds_ssort() and and ds_ssort().
 
-The makefile also creates the executables bwt and unbwt.  bwt compute the
+The makefile also creates the executables bwt and unbwt.  bwt computes the
 Burrows-Wheeler transform of infile and writes it to infile.bwt; unbwt does
 the reverse transformation.
 
@@ -64,8 +64,8 @@ the reverse transformation.
 NEW: Lightweight LCP array computation
 
 The makefile creates the executable testlcp which tests several 
-algorithm for linear time computation of the LCP array given the text 
-and the suffix array. These algorithm are described in the paper
+algorithms for linear time computation of the LCP array given the text 
+and the suffix array. These algorithms are described in the paper
 
 G. Manzini
 Two Space Saving Tricks for Linear Time LCP Array Computation
@@ -73,8 +73,7 @@ Proc. 9th Scandinavian Workshop on Algorithm Theory (SWAT '04),
 Springer Verlag LNCS n. 3111, pagg. 372-383
 
 The source code of the LCP algorithms can be found in the files
-lcp_aux.c, lcp5_aux.c and bwt_aux.c. More documentations 
-will be included soon. Stay tuned!
+lcp_aux.c, lcp5_aux.c and bwt_aux.c. 
 
 --------------------------------------------------------------------- 
 
@@ -83,5 +82,5 @@ The software in this archive should be considered an ALPHA version. I will be
 glad to receive your comments and bug reports.
 
 Giovanni Manzini
-manzini@mfn.unipmn.it
+manzini@mfn.unipmn.it (no longer valid, now is giovanni.manzini at unipi.it)
 

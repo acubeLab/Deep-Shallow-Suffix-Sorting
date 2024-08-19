@@ -1,12 +1,13 @@
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
-   simplesa.c
-   simple program showin the usage of the deep shallow suffix sort algorithm  
+   sa32.c
+   simple program showing the simplest usage of the deep shallow suffix sort 
+   algorithm for the computation of the suffix array.
+
+   giovanni.manzini@unipi.it       
    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 #include <stdlib.h>
 #include <stdio.h>
 #include "common.h"
-
-
 
 
 /* --------- prototypes ----------------- */ 

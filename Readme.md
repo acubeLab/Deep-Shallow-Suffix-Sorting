@@ -24,12 +24,11 @@ As we stated above, the algorithm is no longer the state of the art, however the
 * `unbwt`: takes as input a file produced by `bwt` and recover the original input file
 
 
-If for some reason you need to use this algorithm in your project look at the `sa32.c` file which shows the simplest usage using the defualt parameters.  
+If for some reason you need to use this algorithm in your project look at the `sa32.c` file which shows the simplest usage using the default parameters.  
 
 
 
 ## Additional software
 
-The repository contains also the implementations of the LCP array construction algorithms described in the paper "Two Space Saving Tricks for Linear Time LCP Array Computation" published in the Proceedings of the [Scandinavian Workshop on Algorithm Theory, 2004](https://link.springer.com/chapter/10.1007/978-3-540-27810-8_32) (files `bwt_aux.c` and `lcp_aux.c`). The executable `testlcp` computes the suffix array using Deep-shallow suffix sorting and them the LCP array using the algorithms described in the paper. 
-
+The repository contains also the implementations of the LCP array construction algorithms described in the paper "Two Space Saving Tricks for Linear Time LCP Array Computation" published in the Proceedings of the [Scandinavian Workshop on Algorithm Theory, 2004](https://link.springer.com/chapter/10.1007/978-3-540-27810-8_32) (files `bwt_aux.c` and `lcp_aux.c`). The executable `testlcp` computes the suffix array using Deep-Shallow suffix sorting and then the LCP array using the algorithms described in the paper (called `lcp9`, `lcp13`, `lcp9125` and `lcp6`).
 
