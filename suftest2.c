@@ -324,7 +324,7 @@ void write_lcp(char *filename, UChar *x, int *p, int n)
       max_lcp = MAX(max_lcp,j);
       sum_lcp += j;
       if(j<MAX_LCP_SIZE)
-  stat[j]++;   // one more lcp of length j
+        stat[j]++;   // one more lcp of length j
     }
   }
   // output lcp statistics
@@ -333,8 +333,8 @@ void write_lcp(char *filename, UChar *x, int *p, int n)
   if(max_lcp<MAX_LCP_SIZE) { 
     for(i=0;i<=max_lcp;i++) 
       if(stat[i]) {
-  fprintf(lcp,"%10d %10d\n",i,stat[i]);
-  sum += stat[i];
+        fprintf(lcp,"%10d %10d\n",i,stat[i]);
+        sum += stat[i];
       }
     if(sum+1!=n) {
       fprintf(stderr,"Fatal error! Invalid lcp stats!\n");
@@ -361,7 +361,7 @@ void check_sa_ordering(UChar *x, int *p, int n, int verbose)
     if (scmp3(x+p[i], x+p[i+1], & j, MIN(n-p[i], n-p[i+1]))>=0) {
       wrong++;
       if(verbose>1) {
-  printf("---> i=%d  p[i]=%d  p[i+1]=%d\n", i, p[i], p[i+1]);
+        printf("---> i=%d  p[i]=%d  p[i+1]=%d\n", i, p[i], p[i+1]);
       }
     }  
   }
@@ -384,7 +384,7 @@ void print_sa_onscreen(UChar *x, int *p, int n, int max_len)
     else {
       printf("%3d] %3d \"", i, p[i]);
       for (j=p[i]; j<n && j-p[i]<max_len; ++j)
-  pretty_putchar(x[j]);
+        pretty_putchar(x[j]);
       printf("\"\n");
     }
   }

@@ -80,7 +80,7 @@ void ds_ssort(UChar *x, Int32 *p, Int32 n)
   Int32  copyEnd  [256];
   Int32  numQSorted = 0;
 
-  // ------ set some global variable ------
+  // ------ set some global variables ------
   Text=x;
   Text_size=n;
   Sa = p;
@@ -177,22 +177,22 @@ void ds_ssort(UChar *x, Int32 *p, Int32 n)
       }
       // take care of the virtual -1 char in position Text_size+1
       if(ss==0) {
-  k=Text_size-1;
-  c1 = Text[k];
-  if (!bigDone[c1])
-    Sa[ copyStart[c1]++ ] = k;
+        k=Text_size-1;
+        c1 = Text[k];
+        if (!bigDone[c1])
+          Sa[ copyStart[c1]++ ] = k;
       }
       for (j = ftab[ss << 8] & CLEARMASK; j < copyStart[ss]; j++) {
-  k = Sa[j]-1; if (k < 0) continue;  
-  c1 = Text[k];
-  if (!bigDone[c1])
-    Sa[ copyStart[c1]++ ] = k;
+        k = Sa[j]-1; if (k < 0) continue;  
+        c1 = Text[k];
+        if (!bigDone[c1])
+          Sa[ copyStart[c1]++ ] = k;
       }
       for (j = (ftab[(ss+1) << 8] & CLEARMASK) - 1; j > copyEnd[ss]; j--) {
-  k = Sa[j]-1; if (k < 0) continue;
-  c1 = Text[k];
-  if (!bigDone[c1]) 
-    Sa[ copyEnd[c1]-- ] = k;
+        k = Sa[j]-1; if (k < 0) continue;
+        c1 = Text[k];
+        if (!bigDone[c1]) 
+          Sa[ copyEnd[c1]-- ] = k;
       }
     }
     assert (copyStart[ss] - 1 == copyEnd[ss]);
@@ -253,7 +253,7 @@ void calc_running_order ( void )
 
 #if 0
 /* *******************************************************
-   check that the suffixes in position [lo,hi] are in they
+   check that the suffixes in positions [lo,hi] are in they
    correct order
    ******************************************************** */
 static

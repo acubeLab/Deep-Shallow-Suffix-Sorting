@@ -3,7 +3,10 @@
    Ver 1.0    9-dec-03
    Ver 1.1   28-apr-04     (uses bwt_aux)
    Ver 1.2   28-may-04     (uses lcp_aux) 
-   Test algorithms for computing the lcp array. 
+   Test the algorithms for computing the lcp array described in:
+     Giovanni Manzini
+     Two Space Saving Tricks for Linear Time LCP Array Computation. 
+     Proc. SWAT 2004: 372-383
 
    Copyright (C) 2004 Giovanni Manzini (manzini@mfn.unipmn.it)
 
@@ -17,7 +20,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
-   See COPYRIGHT file for further copyright information	   
+   See COPYRIGHT file for further copyright information    
    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 #include <stdlib.h>
 #include <stdio.h>
@@ -28,7 +31,7 @@
 #include <assert.h>
 
 
-/* --- read proptotypes and typedef for ds_ssort --- */
+/* --- read proptotypes and typedefs for ds_ssort --- */
 #include "ds_ssort.h"
 #include "bwt_aux.h"
 #include "lcp_aux.h"
@@ -82,9 +85,9 @@ int main(int argc, char *argv[])
     switch (c)
     {
       case 'v':
-	Verbose++; break;
+        Verbose++; break;
       case 'C':
-	Check_lcp=1; break;
+        Check_lcp=1; break;
       case '?':
         fprintf(stderr,"Unknown option: %c -main-\n", optopt);
         exit(1);
@@ -116,6 +119,7 @@ int main(int argc, char *argv[])
   end = getTime();
   if(Verbose)
     fprintf(stderr,"Elapsed time: %f seconds.\n", end-start);
+  fclose(Infile);
   return 0;
 }
 
@@ -194,10 +198,11 @@ void lcp_file(void)
   for(i=0;i<ALPHA_SIZE;i++) occ[i]=0;
   for(i=0;i<n;i++) occ[text[i]]++;
   extra_bytes = _lcp_sa2lcp_6n(text,&b,sa,occ);
+  free(b.bwt);
   end=getTime();
   fprintf(stdout,"lcp6 construction: %.2f\n",end-start);
   fprintf(stdout,"Total memory for lcp6: %.2fn bytes\n",
-	  6+(4.0*extra_bytes)/n);
+    6+(4.0*extra_bytes)/n);
   // ---- check lcp6 vs lcp9
   cmp_lcp_array(sa, "lcp6", lcp9, "lcp9", n);
 
@@ -225,8 +230,8 @@ void cmp_lcp_array(int *lcp1, char *name1, int *lcp2, char *name2, int n)
     if(lcp1[i]!=lcp2[i]) { 
       diff++; 
       if(Verbose>1)
-	fprintf(stdout,"%s[%d]=%d  %s[%d]=%d\n",
-		name1,i,lcp1[i],name2,i,lcp2[i]);
+  fprintf(stdout,"%s[%d]=%d  %s[%d]=%d\n",
+    name1,i,lcp1[i],name2,i,lcp2[i]);
     }
   if(diff>0)
     fprintf(stdout,"FATAL ERROR! %s/%s differences: %d\n",name1,name2,diff);
@@ -246,7 +251,7 @@ void check_lcp_array(uint8 *t, int n, int *sa, int *lcp)
       if(t[j+h]!=t[k+h]) break;
     if(lcp[i]!=h) {
       fprintf(stdout,"FATAL ERROR! Incorrect LCP value: lcp[%d]=%d!=%d\n",
-	      i,lcp[i],h);
+        i,lcp[i],h);
       return;
     }
   }
