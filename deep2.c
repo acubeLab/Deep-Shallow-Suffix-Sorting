@@ -125,7 +125,11 @@ Int32 cmp_unrolled_lcp(UChar *b1, UChar *b2)
 } 
 
 /* **************************************************************
-   Bentley-Sedgewick multi-key quicksort (seward-like) but with lcp information
+   ternary quicksort (seward-like) with lcp information: during the 
+   partitioning step, we compute the LCP between the pivot and the 
+   suffixes in the lo and hi partition (lcp_lo and lcp_hi)
+   In the recursive step we skip the corresponding number of chars,
+   since we know they are equal  
    ************************************************************** */
 #define STACK_SIZE 100 // recursion is done "smallest first" so a log size stack suffices
 #define Swap(i,j) {tmp=a[i]; a[i]=a[j]; a[j]=tmp;}
