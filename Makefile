@@ -3,10 +3,10 @@ SHELL=/bin/sh
 CC=gcc
 
 #these are for testing
-#CFLAGS =-std=gnu99 -g -Wextra -Wall -Winline -O2
+#CFLAGS =-std=c99 -g -Wextra -Wall -Winline -O2
 
 #these are for maximum speed
-CFLAGS=-std=gnu99 -g -O3 -fomit-frame-pointer -Wextra -Wall -Winline -DDEBUG=0 -DNDEBUG=1  
+CFLAGS=-std=c99 -g -O3 -fomit-frame-pointer -Wextra -Wall -Winline -DDEBUG=0 -DNDEBUG=1  
 
 
 .PHONY: all

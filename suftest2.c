@@ -20,6 +20,7 @@
 
    See README file for further copyright information
    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>

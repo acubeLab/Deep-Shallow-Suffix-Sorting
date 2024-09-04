@@ -17,8 +17,9 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
-   See COPYRIGHT file for further copyright information	   
+   See COPYRIGHT file for further copyright information    
    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -121,7 +122,7 @@ int main(int argc, char *argv[])
       case 'o':
         outfile_name = optarg; break;
       case 'v':
-	Verbose++; break;
+  Verbose++; break;
       case '?':
         fprintf(stderr,"Unknown option: %c -main-\n", optopt);
         exit(1);
